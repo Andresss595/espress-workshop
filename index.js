@@ -1,13 +1,21 @@
+//DEPENDENCIES
 const morgan = require('morgan');
 const express = require('express');
 const app = express();
+
+//ROUTES
 const pokemon = require ('./routes/pokemon');
 const user = require('./routes/user');
+
+//MIDDLEWARE
+const auth = require('./middleware/auth');
+const notFoud = require('./middleware/notFound');
+const index = require('./middleware/index');
  
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+ 
 /*Verbos HTTP
 GET - obtener datos 
 POST - almacenar recursos 
@@ -27,16 +35,14 @@ Agregar nodemon de manera global para que se valla actualizando
 
 agregar los datos de bugs, homepage y en el reporitorio
 */
-app.get("/", (req, res, next)=>{
-    return res.status(200).json({code: 1, message: "Bienvenido al pokedex"});
-});
 
-app.use("/pokemon", pokemon); //no hay preferencias, solo considerar que se lee de arriba a abajo
+app.get("/", index);
 app.use("/user", user);
+app.use(auth);
+app.use("/pokemon", pokemon); //no hay preferencias, solo considerar que se lee de arriba a abajo
 
-app.use((req, res, next) => {
-    return res.status(404).json({code: 404, message: "URL no encontrada"});
-});
+
+app.use(notFoud);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server is running...");
