@@ -35,7 +35,7 @@ user.post("/login", async (req, res, next) =>{
                 user_mail: rows[0].user_mail
             }, "debugkey");
             return res.status(200).json({ code: 200, message: token});
-        }
+        } 
         else{ 
         return res.status(200).json({code: 200, message: "usuario o contraseña incorrectos"});
         }
